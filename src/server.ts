@@ -1,32 +1,29 @@
-import './util/module-alias';
-import { Server } from '@overnightjs/core';
-import bodyParser from 'body-parser';
-import { PostsController } from './controllers/posts';
-import { Application } from 'express';
+import "./util/module-alias";
+import { Server } from "@overnightjs/core";
+import bodyParser from "body-parser";
+import { PostsController } from "./controllers/posts";
+import { Application } from "express";
 
 export class SetupServer extends Server {
+  constructor(private port = 9999) {
+    super();
+  }
 
-    constructor(private port = 9999) {
-        super();
-    }
+  public init(): void {
+    this.setupExpress();
+    this.setupControllers();
+  }
 
-    public init(): void {
-        this.setupExpress();
-        this.setupControllers();
-    }
+  private setupExpress(): void {
+    this.app.use(bodyParser.json());
+  }
 
-    private setupExpress(): void {
-        this.app.use(bodyParser.json());
-    }
+  private setupControllers(): void {
+    const postController = new PostsController();
+    this.addControllers([postController]);
+  }
 
-    private setupControllers(): void {
-        const postController = new PostsController();
-        this.addControllers([
-            postController
-        ]);
-    }
-
-    public getApp(): Application {
-        return this.app;
-    }
+  public getApp(): Application {
+    return this.app;
+  }
 }
